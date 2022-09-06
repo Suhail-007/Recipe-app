@@ -44,7 +44,7 @@ export const loadSearchRecipe = async function(query) {
         title: recipe.title,
       }
     })
-  } catch (e) {
+  } catch (err) {
     throw err
   }
 }

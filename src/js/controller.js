@@ -17,7 +17,7 @@ const controlRecipe = async function() {
 
     //load recipe
     await models.loadRecipe(id);
-
+    
     //render recipe
     recipeView.render(models.state.recipe);
   } catch (e) {
@@ -36,7 +36,9 @@ const controlSearchRecipes = async function() {
     
     //2. load recipes
     await models.loadSearchRecipe(query);
-    console.log(models.state.search.results);
+    
+    //render search recipes
+    resultView.render(models.state.search.results);
   } catch (err) {
     console.log(err);
   }
