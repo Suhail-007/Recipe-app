@@ -1,4 +1,4 @@
-import View from './views/view.js'
+import View from './views/View.js'
 
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
