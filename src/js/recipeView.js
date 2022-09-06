@@ -1,12 +1,14 @@
-class recipeView {
-  #parentElement = document.querySelector('.recipe');
-  #data;
+import View from './views/view.js'
 
-  render(data) {
-    this.#data = data;
-    const markup = this.#generateMarkup();
-    this.#clear(this.#parentElement);
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
+class RecipeView extends View {
+  _parentElement = document.querySelector('.recipe');
+  #data;
+  _errorMessage = 'Sorry! could not find the recipe, please try another one';
+  _successMessage = '';
+
+  addHandlerRender = function(handler) {
+    const events = ['hashchange', 'load'];
+    events.forEach(ev => window.addEventListener(ev, handler));
   }
 
   #generateMarkupIngredient(ing) {
@@ -22,7 +24,7 @@ class recipeView {
       </li>`
   }
 
-  #generateMarkup() {
+  _generateMarkup() {
     return `
     <figure class="recipe__fig">
       <img src="${this.#data.imgUrl}" alt="${this.#data.title}" class="recipe__img" />
@@ -93,27 +95,7 @@ class recipeView {
       </a>
     </div>`
   }
-
-  addHandlerRender = function(handler) {
-    const events = ['hashchange', 'load'];
-    events.forEach(ev => window.addEventListener(ev, handler));
-  }
-
-  renderSpinner = function() {
-    const markup = `
-    <div class="spinner">
-      <svg>
-        <use href="src/img/icons.svg#icon-loader"></use>
-      </svg>
-    </div>`
-    this.#clear(this.#parentElement);
-    this.#parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
-
-  #clear(parentElem) {
-    parentElem.innerHTML = '';
-  }
 }
 
-const recipeview = new recipeView();
+const recipeview = new RecipeView();
 export default recipeview
