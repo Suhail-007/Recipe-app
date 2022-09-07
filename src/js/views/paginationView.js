@@ -2,17 +2,16 @@ import View from './View.js'
 
 class Pagination extends View {
   _parentElement = document.querySelector('.pagination');
-  
+
   //add handler
   addHandlerClick(handler) {
     this._parentElement.addEventListener('click', e => {
       const btn = e.target.closest('.btn--inline');
-      
-      const goToPage = btn.dataset.goto;
-      
-      console.log(goToPage);
-      
-      handler();
+
+      if (!btn) return;
+      const goToPage = +btn.dataset.goto;
+
+      handler(goToPage);
     })
   }
 
@@ -23,10 +22,9 @@ class Pagination extends View {
     const numPages = Math.ceil(this._data.results.length / this._data.resultsPerPage);
 
     //if users are not on first page
-     if (currPage > 1 && currPage < numPages) {
-       return `${this._generatePrevBtnMarkup(currPage)} ${this._generateNextBtnMarkup(currPage)}`
-     }
-
+    if (currPage > 1 && currPage < numPages) {
+      return `${this._generatePrevBtnMarkup(currPage)} ${this._generateNextBtnMarkup(currPage)}`
+    }
 
     //if there's more than one page
     if (numPages > 1 && currPage === 1) {
@@ -41,6 +39,7 @@ class Pagination extends View {
     return ''
   }
 
+  /***** ADDED BY SUHAIL-007@GITHUB*********/
   _generateNextBtnMarkup(page) {
     return `
       <button data-goto="${page + 1}" class="btn--inline pagination__btn--next">
@@ -55,12 +54,13 @@ class Pagination extends View {
     return `
       <button data-goto="${page -1}" class="btn--inline pagination__btn--prev">
         <svg class="search__icon">
-          <use href="./src/img/icons.svg_icon-arrow-left"></use>
+          <use href="src/img/icons.svg_icon-arrow-left"></use>
         </svg>
         <span>Page ${page - 1}</span>
       </button>`
   }
-
+  
+  /***** ADDED BY SUHAIL-007@GITHUB*********/
 }
 
 export default new Pagination()
