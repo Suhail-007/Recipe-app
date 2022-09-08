@@ -10,13 +10,23 @@ class RecipeView extends View {
     events.forEach(ev => window.addEventListener(ev, handler));
   }
 
+  addHandlerUpdateServings(handler) {
+    this._parentElement.addEventListener('click', e => {
+      const btn = e.target.closest('.btn--update-servings');
+      if (!btn) return
+
+      const { updateTo } = btn.dataset;
+      if(+updateTo > 0) handler(+updateTo);
+    });
+  }
+
   #generateMarkupIngredient(ing) {
     return `
       <li class="recipe__ingredient">
         <svg class="recipe__icon">
           <use href="src/img/icons.svg#icon-check"></use>
         </svg>
-        <div class="recipe__quantity">${ing.quantity ? ing.quantity : ''}</div>
+        <div class="recipe__quantity">${ing.quantity ? ing.quantity.toFixed(1) : ''}</div>
         <div class="recipe__description">
         <span class="recipe__unit">${ing.unit}</span> ${ing.description}
         </div>
@@ -47,12 +57,12 @@ class RecipeView extends View {
         <span class="recipe__info-text">servings</span>
 
         <div class="recipe__info-buttons">
-          <button class="btn--tiny btn--increase-servings">
+          <button data-update-to="${this._data.servings - 1}" class="btn--tiny btn--update-servings">
             <svg>
               <use href="src/img/icons.svg#icon-minus-circle"></use>
             </svg>
           </button>
-          <button class="btn--tiny btn--increase-servings">
+          <button data-update-to="${this._data.servings + 1}" class="btn--tiny btn--update-servings">
             <svg>
               <use href="src/img/icons.svg#icon-plus-circle"></use>
             </svg>
