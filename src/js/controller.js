@@ -10,11 +10,16 @@ import pagination from './views/paginationView.js'
 
 const controlRecipe = async function() {
   try {
+    
+    
     //render loading spinner
     recipeView.renderSpinner();
-
+    
     const id = window.location.hash;
     if (!id) return;
+    
+    //active recipe
+    resultView.update(models.getSearchPageResults());
 
     //load recipe
     await models.loadRecipe(id);
@@ -28,6 +33,7 @@ const controlRecipe = async function() {
 
 const controlSearchRecipes = async function() {
   try {
+    
     //1.get query
     const query = searchView.getQuery();
     if (!query) return
@@ -59,7 +65,7 @@ const controlPagination= function(goToPage) {
 const controlServings = function (servings) {
   models.updateServings(servings);
   
-  recipeView.render(models.state.recipe);
+  recipeView.update(models.state.recipe);
 }
 
 
