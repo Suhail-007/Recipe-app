@@ -9,13 +9,14 @@ export const state = {
     resultsPerPage: RES_PER_PAGE,
     page: 1
   },
+  bookmarks: [],
 }
 
 export const loadRecipe = async function(id) {
   try {
 
     //getRecipe
-    const data = await getJSON(`${API_URL}${id.slice(1)}`)
+    const data = await getJSON(`${API_URL}${id}`)
 
     const { recipe } = data.data;
 
@@ -29,6 +30,10 @@ export const loadRecipe = async function(id) {
       sourceUrl: recipe.source_url,
       title: recipe.title,
     }
+
+    if (state.bookmarks.some(bookmark => bookmark.id === id)) state.recipe.bookmarked = true;
+    else state.recipe.bookmarked = false;
+
   } catch (err) {
     throw err
   }
@@ -46,6 +51,9 @@ export const loadSearchRecipe = async function(query) {
         title: recipe.title,
       }
     })
+
+    // reset the page 
+    state.search.page = 1;
   } catch (err) {
     throw err
   }
@@ -53,16 +61,38 @@ export const loadSearchRecipe = async function(query) {
 
 export const getSearchPageResults = function(page = 1) {
   state.search.page = page;
-  const start = (state.search.page - 1) * 10;
-  const end = state.search.page * 10;
+  const start = (page - 1) * state.search.resultsPerPage; // 0
+  const end = page * state.search.resultsPerPage; // 9
   return state.search.results.slice(start, end);
 }
 
 //Update Servings
-export const updateServings = function (newServings) {
+export const updateServings = function(newServings) {
   state.recipe.ingredients.forEach(ing => {
     ing.quantity = (ing.quantity * newServings) / state.recipe.servings;
   })
-  
-  state.recipe.servings = newServings;
+
+  return state.recipe.servings = newServings;
 }
+
+export const addBookmark = function(recipe) {
+  // Add bookmark
+  state.bookmarks.push(recipe);
+
+  // Mark current recipe as bookmarked
+  if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
+
+  console.log(state.bookmarks);
+};
+
+export const deleteBookmark = function(id) {
+  // Delete bookmark
+  const index = state.bookmarks.findIndex(el => el.id === id);
+  state.bookmarks.splice(index, 1);
+  
+  
+  // Mark current recipe as NOT bookmarked
+  if (id === state.recipe.id) state.recipe.bookmarked = false;
+  
+  console.log(state.bookmarks);
+};
