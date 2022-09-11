@@ -12,7 +12,6 @@ import bookmarkView from  './views/bookmarkView.js'
 const controlRecipe = async function() {
   try {
 
-
     //render loading spinner
     recipeView.renderSpinner();
 
@@ -21,6 +20,8 @@ const controlRecipe = async function() {
 
     //active recipe
     resultView.update(models.getSearchPageResults());
+    
+    //update Boomarks
     bookmarkView.update(models.state.bookmarks);
 
     //load recipe
@@ -83,8 +84,12 @@ const controlAddBookmark = function() {
 
 };
 
+const controlBookmarks = function () {
+  bookmarkView.render(models.state.bookmarks);
+}
 
 const init = function() {
+  bookmarkView.addHandlerRender(controlBookmarks)
   recipeView.addHandlerRender(controlRecipe);
   recipeView.addHandlerUpdateServings(controlServings);
   recipeView.addHandlerAddBookmark(controlAddBookmark)

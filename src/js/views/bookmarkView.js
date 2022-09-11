@@ -8,6 +8,10 @@ class BookmarkView extends View {
   _generateMarkup() {
     return this._data.map(bookmark => previewView.render(bookmark, false));
   }
+  
+  addHandlerRender(handler) {
+    window.addEventListener('load', handler);
+  }
 }
 
 export default new BookmarkView();
