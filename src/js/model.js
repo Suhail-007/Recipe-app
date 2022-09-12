@@ -23,17 +23,21 @@ const createRecipeObj = function(data) {
     servings: recipe.servings,
     sourceUrl: recipe.source_url,
     title: recipe.title,
+    ...(recipe.key && { key: recipe.key }),
   }
 }
 
+//Load recipe from API 
 export const loadRecipe = async function(id) {
   try {
 
     //getRecipe
     const data = await getJSON(`${API_URL}${id}`);
-    
-    state.recipe = await createRecipeObj(data);
 
+    state.recipe = await createRecipeObj(data);
+    console.log(state.recipe);
+
+    //if recipe exist in bookmarks array set bookmark property true else false
     if (state.bookmarks.some(bookmark => bookmark.id === id)) state.recipe.bookmarked = true;
     else state.recipe.bookmarked = false;
 
@@ -42,6 +46,7 @@ export const loadRecipe = async function(id) {
   }
 }
 
+//Searched Recipe
 export const loadSearchRecipe = async function(query) {
   try {
     state.search.query = query;
@@ -62,6 +67,7 @@ export const loadSearchRecipe = async function(query) {
   }
 }
 
+//pagination
 export const getSearchPageResults = function(page = 1) {
   state.search.page = page;
   const start = (page - 1) * state.search.resultsPerPage; // 0
@@ -78,8 +84,9 @@ export const updateServings = function(newServings) {
   return state.recipe.servings = newServings;
 }
 
+//add bookmarks to localStorage  
 const persistBookmark = function() {
-  return localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+  return localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
 }
 
 export const addBookmark = function(recipe) {
@@ -92,6 +99,7 @@ export const addBookmark = function(recipe) {
   persistBookmark()
 };
 
+//Delete a bookmark from local storage
 export const deleteBookmark = function(id) {
   // Delete bookmark
   const index = state.bookmarks.findIndex(el => el.id === id);
@@ -117,13 +125,14 @@ export const uploadRecipe = async function(newRecipe) {
       .map(ing => {
 
         //removing if any white space
-        const ingArr = ing[1].replaceAll(' ', '');
+        const ingArr = ing[1].replaceAll(' ', '')
+          .split(',');
 
-        if (ingArr.length < 3) throw new Error('Please enter correct format');
+        if (ingArr.length !== 3) throw new Error('Please enter correct format');
 
         const [quantity, unit, description] = ingArr;
 
-        return { quantity: quantity ? +quantity : '', unit, description };
+        return { quantity: quantity ? +quantity : null, unit, description };
       });
 
     const recipe = {
@@ -137,9 +146,12 @@ export const uploadRecipe = async function(newRecipe) {
       ingredients,
     }
     const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipe);
-    
+
     state.recipe = createRecipeObj(data);
-    
+
+    console.log(state.recipe);
+
+    addBookmark(state.recipe);
   } catch (err) {
     throw err
   }
