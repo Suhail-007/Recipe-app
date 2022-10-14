@@ -1,5 +1,5 @@
 import * as models from './model.js'
-import recipeView from './recipeView.js'
+import recipeView from './views/recipeView.js'
 import searchView from './views/SearchView.js'
 import resultView from './views/resultView.js'
 import pagination from './views/paginationView.js'
@@ -108,6 +108,9 @@ const controlUploadRecipe = async function(newRecipe) {
 
     // Render bookmark view
     bookmarkView.render(models.state.bookmarks);
+    
+    //change url
+    window.history.pushState(null, '', `${models.state.recipe.id}`);
 
     //toggle Window
     setTimeout(function() {
