@@ -35,7 +35,6 @@ export const loadRecipe = async function(id) {
     const data = await getJSON(`${API_URL}${id}`);
 
     state.recipe = await createRecipeObj(data);
-    console.log(state.recipe);
 
     //if recipe exist in bookmarks array set bookmark property true else false
     if (state.bookmarks.some(bookmark => bookmark.id === id)) state.recipe.bookmarked = true;
@@ -148,8 +147,6 @@ export const uploadRecipe = async function(newRecipe) {
     const data = await sendJSON(`${API_URL}?key=${API_KEY}`, recipe);
 
     state.recipe = createRecipeObj(data);
-
-    console.log(state.recipe);
 
     addBookmark(state.recipe);
   } catch (err) {
